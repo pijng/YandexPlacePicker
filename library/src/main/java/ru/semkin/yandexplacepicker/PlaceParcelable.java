@@ -15,7 +15,7 @@ public class PlaceParcelable implements Parcelable {
 
     private String mName;
     private String mAddress;
-    private Boolean mHousePresent = false;
+    private Boolean mHousePresent;
     private PointParcelable mPoint;
 
     @Override
@@ -34,6 +34,7 @@ public class PlaceParcelable implements Parcelable {
     public PlaceParcelable(GeoObject place) {
         mName = place.getName();
         mAddress = place.getDescriptionText();
+        mHousePresent = false;
 
         ToponymObjectMetadata metadata = place.getMetadataContainer().getItem(ToponymObjectMetadata.class);
         for (Address.Component component : metadata.getAddress().getComponents()) {
