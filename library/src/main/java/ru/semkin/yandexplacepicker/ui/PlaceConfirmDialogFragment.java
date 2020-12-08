@@ -85,7 +85,7 @@ public class PlaceConfirmDialogFragment extends AppCompatDialogFragment {
     }
 
     private void fetchPlaceMap(Context context, View content) {
-        String lang = "en_US";
+        String lang = "ru_RU";
         if(Locale.getDefault().getLanguage().equalsIgnoreCase(new Locale("ru").getLanguage()))
             lang = "ru_RU";
 
