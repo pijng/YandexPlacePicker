@@ -67,11 +67,15 @@ import com.yandex.mapkit.user_location.UserLocationLayer;
 import com.yandex.mapkit.user_location.UserLocationObjectListener;
 import com.yandex.mapkit.user_location.UserLocationView;
 import com.yandex.runtime.Error;
+import com.yandex.runtime.i18n.I18nManager;
+import com.yandex.runtime.i18n.I18nManagerFactory;
+import com.yandex.runtime.i18n.LocaleUpdateListener;
 import com.yandex.runtime.image.ImageProvider;
 import com.yandex.runtime.network.NetworkError;
 import com.yandex.runtime.network.RemoteError;
 
 import java.util.List;
+import java.util.Locale;
 
 import ru.semkin.yandexplacepicker.PlaceParcelable;
 import ru.semkin.yandexplacepicker.R;
@@ -86,6 +90,7 @@ public class YandexPickerActivity extends AppCompatActivity implements UserLocat
     private MapObjectCollection mMapObjects;
     private UserLocationLayer mUserLocationLayer;
     private LocationManager mLocationManager;
+    private I18nManager mI18nManager;
     private Location mLastLocation;
     private SearchManager mSearchManager;
 
@@ -113,6 +118,18 @@ public class YandexPickerActivity extends AppCompatActivity implements UserLocat
         setContentView(R.layout.activity_place_picker);
 
         // Initializes the map
+        Locale locale = new Locale("ru", "RU");
+        I18nManagerFactory.setLocale(locale.toString(), new LocaleUpdateListener() {
+            @Override
+            public void onLocaleUpdated() {
+                Log.d("LOCALE","onLocaleUpdated");
+            }
+            @Override
+            public void onLocaleUpdateError(@NonNull Error error) {
+                Log.d("LOCALE","onLocaleUpdateError");
+            }
+        });
+
         MapKitFactory.initialize(this);
         SearchFactory.initialize(this);
         mMapView = findViewById(R.id.mapview);
@@ -146,7 +163,6 @@ public class YandexPickerActivity extends AppCompatActivity implements UserLocat
         // Construct LocationManager and SearchManager
         mLocationManager = MapKitFactory.getInstance().createLocationManager();
         mSearchManager = SearchFactory.getInstance().createSearchManager(SearchManagerType.ONLINE);
-
         // Sets the default zoom and location
         mMapView.getMap().move(new CameraPosition(new Point(55.6842731688303, 37.6219312108), 4.716611f, 0, 0));
         mMapView.getMap().addCameraListener(this);
