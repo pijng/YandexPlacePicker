@@ -62,6 +62,7 @@ public class SearchActivity extends AppCompatActivity implements Session.SearchL
         setContentView(R.layout.activity_search);
 
         // Initializes the map
+        MapKitFactory.setLocale("ru_RU");
         MapKitFactory.initialize(this);
         SearchFactory.initialize(this);
 
