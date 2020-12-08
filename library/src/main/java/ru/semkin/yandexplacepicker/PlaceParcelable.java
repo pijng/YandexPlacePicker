@@ -2,14 +2,20 @@ package ru.semkin.yandexplacepicker;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import com.yandex.mapkit.GeoObject;
 import com.yandex.mapkit.geometry.Point;
+import com.yandex.mapkit.search.Address;
+import com.yandex.mapkit.search.ToponymObjectMetadata;
+
+import java.util.List;
 
 public class PlaceParcelable implements Parcelable {
 
     private String mName;
     private String mAddress;
+    private String mHouse;
     private PointParcelable mPoint;
 
     @Override
@@ -28,6 +34,18 @@ public class PlaceParcelable implements Parcelable {
     public PlaceParcelable(GeoObject place) {
         mName = place.getName();
         mAddress = place.getDescriptionText();
+        mHouse = "";
+
+        ToponymObjectMetadata metadata = place.getMetadataContainer().getItem(ToponymObjectMetadata.class);
+        for (Address.Component component : metadata.getAddress().getComponents()) {
+            List<Address.Component.Kind> kinds = component.getKinds();
+            for (Address.Component.Kind kind : kinds) {
+                if (kind.equals(Address.Component.Kind.HOUSE)) {
+                    mHouse = component.getName();
+                }
+            }
+        }
+
         Point point = place.getGeometry().get(0).getPoint();
         if(point != null) {
             mPoint = new PointParcelable(point);
@@ -59,6 +77,10 @@ public class PlaceParcelable implements Parcelable {
 
     public String getAddress() {
         return mAddress;
+    }
+
+    public String getHouse() {
+        return mHouse;
     }
 
     public PointParcelable getPoint() {
