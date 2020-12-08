@@ -15,34 +15,35 @@ public class PlaceParcelable implements Parcelable {
 
     private String mName;
     private String mAddress;
-    private Boolean mHousePresent;
+    private String mHousePresent;
     private PointParcelable mPoint;
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(mName);
         dest.writeString(mAddress);
+        dest.writeString(mHousePresent);
         dest.writeParcelable(mPoint, 0);
     }
 
     private PlaceParcelable(Parcel in) {
         mName = in.readString();
         mAddress = in.readString();
+        mHousePresent = in.readString();
         mPoint = in.readParcelable(PointParcelable.class.getClassLoader());
     }
 
     public PlaceParcelable(GeoObject place) {
         mName = place.getName();
         mAddress = place.getDescriptionText();
-        mHousePresent = false;
+        mHousePresent = "";
 
         ToponymObjectMetadata metadata = place.getMetadataContainer().getItem(ToponymObjectMetadata.class);
         for (Address.Component component : metadata.getAddress().getComponents()) {
             List<Address.Component.Kind> kinds = component.getKinds();
             for (Address.Component.Kind kind : kinds) {
                 if (kind.equals(Address.Component.Kind.HOUSE)) {
-                    mHousePresent = true;
-                    Log.d("DICH", "setting to true");
+                    mHousePresent = component.getName();
                 }
             }
         }
@@ -80,7 +81,7 @@ public class PlaceParcelable implements Parcelable {
         return mAddress;
     }
 
-    public Boolean isHousePresent() {
+    public String getHousePresent() {
         return mHousePresent;
     }
 
