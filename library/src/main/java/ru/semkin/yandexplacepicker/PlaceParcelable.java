@@ -2,6 +2,7 @@ package ru.semkin.yandexplacepicker;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import com.yandex.mapkit.GeoObject;
 import com.yandex.mapkit.geometry.Point;
@@ -14,7 +15,7 @@ public class PlaceParcelable implements Parcelable {
 
     private String mName;
     private String mAddress;
-    private Boolean mHousePresent;
+    private Boolean mHousePresent = false;
     private PointParcelable mPoint;
 
     @Override
@@ -40,6 +41,7 @@ public class PlaceParcelable implements Parcelable {
             for (Address.Component.Kind kind : kinds) {
                 if (kind.equals(Address.Component.Kind.HOUSE)) {
                     mHousePresent = true;
+                    Log.d("DICH", "setting to true");
                 }
             }
         }
