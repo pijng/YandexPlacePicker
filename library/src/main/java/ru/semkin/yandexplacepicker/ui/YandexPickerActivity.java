@@ -113,6 +113,7 @@ public class YandexPickerActivity extends AppCompatActivity implements UserLocat
         setContentView(R.layout.activity_place_picker);
 
         // Initializes the map
+        MapKitFactory.setLocale("ru_RU");
         MapKitFactory.initialize(this);
         SearchFactory.initialize(this);
         mMapView = findViewById(R.id.mapview);
