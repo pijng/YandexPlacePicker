@@ -39,11 +39,13 @@ public class PlaceParcelable implements Parcelable {
         mHousePresent = "";
 
         ToponymObjectMetadata metadata = place.getMetadataContainer().getItem(ToponymObjectMetadata.class);
-        for (Address.Component component : metadata.getAddress().getComponents()) {
-            List<Address.Component.Kind> kinds = component.getKinds();
-            for (Address.Component.Kind kind : kinds) {
-                if (kind.equals(Address.Component.Kind.HOUSE)) {
-                    mHousePresent = component.getName();
+        if (metadata != null && metadata.getAddress() != null) {
+            for (Address.Component component : metadata.getAddress().getComponents()) {
+                List<Address.Component.Kind> kinds = component.getKinds();
+                for (Address.Component.Kind kind : kinds) {
+                    if (kind.equals(Address.Component.Kind.HOUSE)) {
+                        mHousePresent = component.getName();
+                    }
                 }
             }
         }
