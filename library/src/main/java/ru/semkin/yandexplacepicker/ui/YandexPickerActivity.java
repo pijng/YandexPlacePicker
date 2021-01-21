@@ -84,14 +84,15 @@ public class YandexPickerActivity extends AppCompatActivity implements UserLocat
     private final static String DIALOG_CONFIRM_PLACE_TAG = "dialog_place_confirm";
     private final static int AUTOCOMPLETE_REQUEST_CODE = 1001;
     private static final double DESIRED_ACCURACY = 0;
-    private static final long MINIMAL_TIME = 0;
-    private static final double MINIMAL_DISTANCE = 50;
+    private static final long MINIMAL_TIME = 1000;
+    private static final double MINIMAL_DISTANCE = 1;
     private static final boolean USE_IN_BACKGROUND = false;
 
     private MapView mMapView;
     private MapObjectCollection mMapObjects;
     private UserLocationLayer mUserLocationLayer;
     private LocationManager mLocationManager;
+    private LocationListener mLocationListener;
     private Location mLastLocation;
     private SearchManager mSearchManager;
 
@@ -152,7 +153,23 @@ public class YandexPickerActivity extends AppCompatActivity implements UserLocat
 
         // Construct LocationManager and SearchManager
         mLocationManager = MapKitFactory.getInstance().createLocationManager();
-        subscribeToLocationUpdate();
+        mLocationListener = new LocationListener() {
+            @Override
+            public void onLocationUpdated(@NonNull Location location) {
+                mLastLocation = location;
+                animateCamera(location.getPosition(), mDefaultZoom);
+
+                // Load the places near this location
+                loadNearbyPlaces();
+            }
+
+            @Override
+            public void onLocationStatusUpdated(@NonNull LocationStatus locationStatus) {
+                if (locationStatus == LocationStatus.NOT_AVAILABLE) {
+                    //todo handle no geo
+                }
+            }
+        };
 
         mSearchManager = SearchFactory.getInstance().createSearchManager(SearchManagerType.ONLINE);
         // Sets the default zoom and location
@@ -167,9 +184,6 @@ public class YandexPickerActivity extends AppCompatActivity implements UserLocat
 
         // Restore any active fragment
         restoreFragments();
-
-        // Get the current location of the device and set the position of the map
-        getDeviceLocation(true);
 
         // Use the last know location to point the map to
         mLastLocation = LocationManagerUtils.getLastKnownLocation();
@@ -236,7 +250,7 @@ public class YandexPickerActivity extends AppCompatActivity implements UserLocat
         mRecyclerNearby.setLayoutManager(new LinearLayoutManager(this));
 
         // Bind the listeners
-        mButtonLocation.setOnClickListener(v -> getDeviceLocation(true));
+        mButtonLocation.setOnClickListener(v -> onFabCurrentLocationClick());
         mCardSearch.setOnClickListener(v -> requestPlacesSearch());
         mImageMarker.setOnClickListener(v -> selectThisPlace());
         mTextLocationSelect.setOnClickListener(v -> selectThisPlace());
@@ -283,37 +297,9 @@ public class YandexPickerActivity extends AppCompatActivity implements UserLocat
             appBarLayoutParams.height = (view.getHeight() * 85) / 100;
     }
 
-    private LocationListener mLocationListener;
-    private void getDeviceLocation(boolean animate) {
-        // Get the best and most recent location of the device
-        mLocationListener = new LocationListener() {
-            @Override
-            public void onLocationUpdated(@NonNull Location location) {
-                mLastLocation = location;
-
-                // Set the map's camera position to the current location of the device
-                if (animate)
-                    animateCamera(location.getPosition(), mDefaultZoom);
-                else
-                    moveCamera(location.getPosition(), mDefaultZoom);
-
-                // Load the places near this location
-                loadNearbyPlaces();
-            }
-
-            @Override
-            public void onLocationStatusUpdated(@NonNull LocationStatus locationStatus) {
-                if (locationStatus == LocationStatus.NOT_AVAILABLE) {
-                    //todo handle no geo
-                }
-            }
-        };
-        mLocationManager.requestSingleUpdate(mLocationListener);
-    }
-
     private void subscribeToLocationUpdate() {
         if (mLocationManager != null && mLocationListener != null) {
-            mLocationManager.subscribeForLocationUpdates(DESIRED_ACCURACY, MINIMAL_TIME, MINIMAL_DISTANCE, USE_IN_BACKGROUND, FilteringMode.ON, mLocationListener);
+            mLocationManager.subscribeForLocationUpdates(DESIRED_ACCURACY, MINIMAL_TIME, MINIMAL_DISTANCE, USE_IN_BACKGROUND, FilteringMode.OFF, mLocationListener);
         }
     }
 
@@ -322,13 +308,24 @@ public class YandexPickerActivity extends AppCompatActivity implements UserLocat
         super.onStart();
         MapKitFactory.getInstance().onStart();
         mMapView.onStart();
+
+        subscribeToLocationUpdate();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        mMapView.onStop();
         MapKitFactory.getInstance().onStop();
+        mLocationManager.unsubscribe(mLocationListener);
+        mMapView.onStop();
+    }
+
+    public void onFabCurrentLocationClick() {
+        if (mLastLocation == null) {
+            return;
+        }
+
+        animateCamera(mLastLocation.getPosition(), mDefaultZoom);
     }
 
     @Override
