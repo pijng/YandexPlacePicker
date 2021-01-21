@@ -34,9 +34,11 @@ import com.google.android.material.card.MaterialCardView;
 import com.yandex.mapkit.Animation;
 import com.yandex.mapkit.GeoObject;
 import com.yandex.mapkit.GeoObjectCollection;
+import com.yandex.mapkit.MapKit;
 import com.yandex.mapkit.MapKitFactory;
 import com.yandex.mapkit.geometry.Point;
 import com.yandex.mapkit.layers.ObjectEvent;
+import com.yandex.mapkit.location.FilteringMode;
 import com.yandex.mapkit.location.Location;
 import com.yandex.mapkit.location.LocationListener;
 import com.yandex.mapkit.location.LocationManager;
@@ -81,6 +83,10 @@ public class YandexPickerActivity extends AppCompatActivity implements UserLocat
 
     private final static String DIALOG_CONFIRM_PLACE_TAG = "dialog_place_confirm";
     private final static int AUTOCOMPLETE_REQUEST_CODE = 1001;
+    private static final double DESIRED_ACCURACY = 0;
+    private static final long MINIMAL_TIME = 0;
+    private static final double MINIMAL_DISTANCE = 50;
+    private static final boolean USE_IN_BACKGROUND = false;
 
     private MapView mMapView;
     private MapObjectCollection mMapObjects;
@@ -146,6 +152,8 @@ public class YandexPickerActivity extends AppCompatActivity implements UserLocat
 
         // Construct LocationManager and SearchManager
         mLocationManager = MapKitFactory.getInstance().createLocationManager();
+        subscribeToLocationUpdate();
+
         mSearchManager = SearchFactory.getInstance().createSearchManager(SearchManagerType.ONLINE);
         // Sets the default zoom and location
         mMapView.getMap().move(new CameraPosition(new Point(55.6842731688303, 37.6219312108), 4.716611f, 0, 0));
@@ -301,6 +309,12 @@ public class YandexPickerActivity extends AppCompatActivity implements UserLocat
             }
         };
         mLocationManager.requestSingleUpdate(mLocationListener);
+    }
+
+    private void subscribeToLocationUpdate() {
+        if (mLocationManager != null && mLocationListener != null) {
+            mLocationManager.subscribeForLocationUpdates(DESIRED_ACCURACY, MINIMAL_TIME, MINIMAL_DISTANCE, USE_IN_BACKGROUND, FilteringMode.ON, mLocationListener);
+        }
     }
 
     @Override
