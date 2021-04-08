@@ -136,6 +136,9 @@ public class SearchActivity extends AppCompatActivity implements Session.SearchL
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                if(!newText.trim().equals("")) {
+                    requestSuggest(newText.trim());
+                }
                 return false;
             }
         });
