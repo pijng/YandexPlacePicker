@@ -57,14 +57,8 @@ public class SearchActivity extends AppCompatActivity implements Session.SearchL
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        MapKitFactory.setApiKey(YandexPlacePicker.yandexMapsKey);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
-
-        // Initializes the map
-        MapKitFactory.setLocale("ru_RU");
-        MapKitFactory.initialize(this);
-        SearchFactory.initialize(this);
 
         mToolbar = findViewById(R.id.toolbar);
         mSpinner = findViewById(R.id.pbLoading);
