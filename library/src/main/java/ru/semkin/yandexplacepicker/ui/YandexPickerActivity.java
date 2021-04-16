@@ -55,6 +55,7 @@ import com.yandex.mapkit.map.Map;
 import com.yandex.mapkit.map.MapObject;
 import com.yandex.mapkit.map.MapObjectCollection;
 import com.yandex.mapkit.map.MapObjectTapListener;
+import com.yandex.mapkit.map.MapType;
 import com.yandex.mapkit.map.PlacemarkMapObject;
 import com.yandex.mapkit.map.RotationType;
 import com.yandex.mapkit.mapview.MapView;
@@ -124,6 +125,7 @@ public class YandexPickerActivity extends AppCompatActivity implements UserLocat
         MapKitFactory.initialize(this);
         SearchFactory.initialize(this);
         mMapView = findViewById(R.id.mapview);
+        mMapView.getMap().setMapType(MapType.MAP);
         mMapView.getMap().setRotateGesturesEnabled(false);
         mMapView.getMap().getLogo().setAlignment(new Alignment(HorizontalAlignment.LEFT, VerticalAlignment.BOTTOM));
 
@@ -555,5 +557,13 @@ public class YandexPickerActivity extends AppCompatActivity implements UserLocat
             }
         }
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        MapKitFactory.getInstance().onStop();
+        mLocationManager.unsubscribe(mLocationListener);
+        mMapView.onStop();
     }
 }
