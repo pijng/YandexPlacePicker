@@ -116,14 +116,16 @@ public class YandexPickerActivity extends AppCompatActivity implements UserLocat
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
         MapKitFactory.setApiKey(YandexPlacePicker.yandexMapsKey);
-        MapKitFactory.setLocale("ru_RU");
-        setContentView(R.layout.activity_place_picker);
+        super.onCreate(savedInstanceState);
 
         // Initializes the map
+        MapKitFactory.setLocale("ru_RU");
         MapKitFactory.initialize(this);
         SearchFactory.initialize(this);
+
+        setContentView(R.layout.activity_place_picker);
+
         mMapView = findViewById(R.id.mapview);
         mMapView.getMap().setMapType(MapType.MAP);
         mMapView.getMap().setRotateGesturesEnabled(false);
