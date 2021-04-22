@@ -116,16 +116,15 @@ public class YandexPickerActivity extends AppCompatActivity implements UserLocat
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        MapKitFactory.setApiKey(YandexPlacePicker.yandexMapsKey);
         super.onCreate(savedInstanceState);
+//        MapKitFactory.setApiKey(YandexPlacePicker.yandexMapsKey);
+        MapKitFactory.setApiKey("4b93dcd9-0c32-442c-b888-b6ec0bc4c215");
 
         // Initializes the map
         MapKitFactory.setLocale("ru_RU");
         MapKitFactory.initialize(this);
         SearchFactory.initialize(this);
-
         setContentView(R.layout.activity_place_picker);
-
         mMapView = findViewById(R.id.mapview);
         mMapView.getMap().setMapType(MapType.MAP);
         mMapView.getMap().setRotateGesturesEnabled(false);
@@ -310,8 +309,8 @@ public class YandexPickerActivity extends AppCompatActivity implements UserLocat
     @Override
     public void onStart() {
         super.onStart();
-        MapKitFactory.getInstance().onStart();
         mMapView.onStart();
+        MapKitFactory.getInstance().onStart();
 
         subscribeToLocationUpdate();
     }
@@ -319,9 +318,9 @@ public class YandexPickerActivity extends AppCompatActivity implements UserLocat
     @Override
     public void onStop() {
         super.onStop();
+        mMapView.onStop();
         MapKitFactory.getInstance().onStop();
         mLocationManager.unsubscribe(mLocationListener);
-        mMapView.onStop();
     }
 
     public void onFabCurrentLocationClick() {
