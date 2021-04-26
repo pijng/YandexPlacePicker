@@ -49,7 +49,7 @@ import com.yandex.mapkit.logo.HorizontalAlignment;
 import com.yandex.mapkit.logo.VerticalAlignment;
 import com.yandex.mapkit.map.CameraListener;
 import com.yandex.mapkit.map.CameraPosition;
-import com.yandex.mapkit.map.CameraUpdateSource;
+import com.yandex.mapkit.map.CameraUpdateReason;
 import com.yandex.mapkit.map.IconStyle;
 import com.yandex.mapkit.map.Map;
 import com.yandex.mapkit.map.MapObject;
@@ -119,7 +119,6 @@ public class YandexPickerActivity extends AppCompatActivity implements UserLocat
         super.onCreate(savedInstanceState);
 //        MapKitFactory.setApiKey(YandexPlacePicker.yandexMapsKey);
         MapKitFactory.setApiKey("4b93dcd9-0c32-442c-b888-b6ec0bc4c215");
-
         // Initializes the map
         MapKitFactory.setLocale("ru_RU");
         MapKitFactory.initialize(this);
@@ -547,8 +546,8 @@ public class YandexPickerActivity extends AppCompatActivity implements UserLocat
     }
 
     @Override
-    public void onCameraPositionChanged(@NonNull Map map, @NonNull CameraPosition cameraPosition, @NonNull CameraUpdateSource cameraUpdateSource, boolean finished) {
-        if (cameraUpdateSource == CameraUpdateSource.GESTURES) {
+    public void onCameraPositionChanged(@NonNull Map map, @NonNull CameraPosition cameraPosition, @NonNull CameraUpdateReason cameraUpdateReason, boolean finished) {
+        if (cameraUpdateReason == CameraUpdateReason.GESTURES) {
             if (getResources().getBoolean(R.bool.search_on_scroll)) {
                 if(finished)
                     selectThisPlace();
