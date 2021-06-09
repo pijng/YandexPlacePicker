@@ -316,7 +316,7 @@ public class YandexPickerActivity extends AppCompatActivity implements UserLocat
         mMapView.onStart();
         MapKitFactory.getInstance().onStart();
 
-        subscribeToLocationUpdate();
+//        subscribeToLocationUpdate();
     }
 
     @Override
